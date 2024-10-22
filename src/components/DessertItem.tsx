@@ -70,18 +70,9 @@ export default function DessertItem({
     <section className="flex flex-col">
       <div className="relative">
         <picture>
-          <source
-            srcSet={dessert.image.desktop}
-            media="(min-width: 1024px)"
-          ></source>
-          <source
-            srcSet={dessert.image.tablet}
-            media="(min-width: 768px)"
-          ></source>
-          <source
-            srcSet={dessert.image.mobile}
-            media="(min-width: 767px)"
-          ></source>
+          <source srcSet={dessert.image.desktop} media="(min-width: 1024px)" />
+          <source srcSet={dessert.image.tablet} media="(min-width: 768px)" />
+          <source srcSet={dessert.image.mobile} media="(min-width: 767px)" />
           <img
             className={`w-full rounded-xl border-2 ${
               isActive && itemQuantity > 0 ? "border-custom-red" : ""
@@ -141,8 +132,8 @@ export default function DessertItem({
         <li className="text-preset-3 text-custom-red font-semi-bold">
           $
           {Number.isInteger(dessert.price)
-            ? dessert.price + ".00"
-            : dessert.price + "0"}
+            ? `${dessert.price}.00`
+            : `${dessert.price.toFixed(2)}`}
         </li>
       </ul>
     </section>

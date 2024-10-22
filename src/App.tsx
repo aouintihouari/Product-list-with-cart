@@ -11,18 +11,16 @@ interface DessertImage {
   desktop: string;
 }
 
-interface Dessert {
-  image: DessertImage;
-  name: string;
-  category: string;
-  price: number;
-}
-
 interface Item {
   thumbnail: string;
   name: string;
   price: number;
   quantity: number;
+}
+
+interface Dessert extends Item {
+  image: DessertImage;
+  category: string;
 }
 
 export default function App(): ReactElement {
@@ -62,7 +60,7 @@ export default function App(): ReactElement {
     setShowOrderConfirmed(false);
   };
 
-  const handleIncreaseQuantity = (item: Item): void => {
+  const handleIncreaseQuantity = (item: Dessert): void => {
     setAddedItems((previousItems) => {
       const existingItem = previousItems.find(
         (addedItem) => addedItem.name === item.name
@@ -78,7 +76,7 @@ export default function App(): ReactElement {
     });
   };
 
-  const handleDecreaseQuantity = (item: Item): void => {
+  const handleDecreaseQuantity = (item: Dessert): void => {
     setAddedItems((previousItems) => {
       return previousItems
         .map((addedItem) =>
@@ -90,7 +88,7 @@ export default function App(): ReactElement {
     });
   };
 
-  const handleDeleteItem = (item: Item): void => {
+  const handleDeleteItem = (item: Dessert): void => {
     setAddedItems((previousItems) =>
       previousItems.filter((addedItem) => addedItem.name !== item.name)
     );

@@ -34,7 +34,7 @@ export default function Cart({
                         {item.quantity}x
                       </span>
                       <span className="text-custom-rose-500 mr-4">
-                        @ $
+                        @ ${" "}
                         {Number.isInteger(item.price)
                           ? item.price + ".00"
                           : item.price.toFixed(2)}
@@ -43,7 +43,7 @@ export default function Cart({
                         $
                         {Number.isInteger(item.quantity * item.price)
                           ? (item.quantity * item.price).toFixed(2)
-                          : item.quantity * item.price.toFixed(2)}
+                          : (item.quantity * item.price).toFixed(2)}
                       </span>
                     </p>
                   </div>
