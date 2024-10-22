@@ -1,16 +1,41 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, ReactElement } from "react";
+
+interface DessertImage {
+  thumbnail: string;
+  mobile: string;
+  tablet: string;
+  desktop: string;
+}
+
+interface Dessert {
+  image: DessertImage;
+  name: string;
+  price: number;
+  category: string;
+}
+
+interface Item extends Dessert {
+  quantity: number;
+}
+
+interface Props {
+  totalItems: number;
+  addedItems: Item[];
+  onDeleteItem: (item: Dessert) => void;
+  onOpenOrderConfirmed: () => void;
+}
 
 export default function Cart({
   totalItems,
   addedItems,
   onDeleteItem,
   onOpenOrderConfirmed,
-}) {
-  const [totalPrice, setTotalPrice] = useState(0);
+}: Props): ReactElement {
+  const [totalPrice, setTotalPrice] = useState<number>(0);
 
   useEffect(() => {
     const totalPriceQuantity = addedItems.reduce(
-      (acc, curr) => curr.quantity * curr.price + acc,
+      (acc: number, curr: Item) => curr.quantity * curr.price + acc,
       0
     );
     setTotalPrice(totalPriceQuantity);
@@ -24,7 +49,7 @@ export default function Cart({
         </h2>
         {totalItems ? (
           <>
-            {addedItems.map((item, index) => (
+            {addedItems.map((item: Item, index: number) => (
               <div key={index}>
                 <section className="flex justify-between items-center text-preset-4 mt-4">
                   <div>
@@ -40,10 +65,7 @@ export default function Cart({
                           : item.price.toFixed(2)}
                       </span>
                       <span className="text-custom-rose-500 font-semi-bold mr-4">
-                        $
-                        {Number.isInteger(item.quantity * item.price)
-                          ? (item.quantity * item.price).toFixed(2)
-                          : (item.quantity * item.price).toFixed(2)}
+                        ${(item.quantity * item.price).toFixed(2)}
                       </span>
                     </p>
                   </div>

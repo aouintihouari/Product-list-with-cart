@@ -11,16 +11,16 @@ interface DessertImage {
   desktop: string;
 }
 
-interface Item {
-  thumbnail: string;
+interface Dessert {
+  image: DessertImage;
   name: string;
   price: number;
-  quantity: number;
+  category: string;
 }
 
-interface Dessert extends Item {
+interface Item extends Dessert {
   image: DessertImage;
-  category: string;
+  quantity: number;
 }
 
 export default function App(): ReactElement {

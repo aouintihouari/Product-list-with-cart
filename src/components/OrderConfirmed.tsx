@@ -1,11 +1,35 @@
 import { useEffect, useState } from "react";
 
-export default function OrderConfirmed({ onAddedItem, onClear }) {
+interface DessertImage {
+  thumbnail: string;
+  mobile: string;
+  tablet: string;
+  desktop: string;
+}
+
+interface Dessert {
+  image: DessertImage;
+  name: string;
+  price: number;
+  category: string;
+}
+
+interface Item extends Dessert {
+  image: DessertImage;
+  quantity: number;
+}
+
+interface Props {
+  onClear: () => void;
+  onAddedItem: Item[]; // Update this line
+}
+
+export default function OrderConfirmed({ onAddedItem, onClear }: Props) {
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
     const totalPriceQuantity = onAddedItem.reduce(
-      (acc, curr) => curr.quantity * curr.price + acc,
+      (acc: number, curr: Item) => curr.quantity * curr.price + acc, // Change acc type to number
       0
     );
     setTotalPrice(totalPriceQuantity);
@@ -29,7 +53,7 @@ export default function OrderConfirmed({ onAddedItem, onClear }) {
               </p>
             </div>
             <ul className="bg-custom-rose-50 mt-4 p-4 rounded-lg">
-              {onAddedItem.map((item, index) => (
+              {onAddedItem.map((item: Item, index: number) => (
                 <li
                   key={index}
                   className="flex justify-between items-center border-b py-2"

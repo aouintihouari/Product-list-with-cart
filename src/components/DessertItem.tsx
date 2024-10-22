@@ -10,14 +10,12 @@ interface DessertImage {
 interface Dessert {
   image: DessertImage;
   name: string;
-  category: string;
   price: number;
+  category: string;
 }
 
-interface Item {
-  thumbnail: string;
-  name: string;
-  price: number;
+interface Item extends Dessert {
+  image: DessertImage;
   quantity: number;
 }
 
