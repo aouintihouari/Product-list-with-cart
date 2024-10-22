@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 
-export default function Cart({ totalItems, addedItems, onDeleteItem }) {
+export default function Cart({
+  totalItems,
+  addedItems,
+  onDeleteItem,
+  onOpenOrderConfirmed,
+}) {
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
@@ -83,7 +88,6 @@ export default function Cart({ totalItems, addedItems, onDeleteItem }) {
                   delivery
                 </p>
               </div>
-              <button className=""></button>
             </div>
           </>
         ) : (
@@ -98,8 +102,11 @@ export default function Cart({ totalItems, addedItems, onDeleteItem }) {
           </div>
         )}
       </div>
-      {totalItems && (
-        <button className="bg-custom-red text-white w-full p-2 mt-4 rounded-full hover:opacity-90 transition-opacity duration-1000">
+      {totalItems > 0 && (
+        <button
+          onClick={onOpenOrderConfirmed}
+          className="bg-custom-red text-white w-full p-2 mt-4 rounded-full hover:opacity-90 transition-opacity duration-1000"
+        >
           Start New Order
         </button>
       )}

@@ -2,6 +2,7 @@ import { ReactElement, useEffect, useState } from "react";
 import Loader from "./components/Loader";
 import DessertList from "./components/DessertList";
 import Cart from "./components/Cart";
+import OrderConfirmed from "./components/OrderConfirmed";
 
 interface DessertImage {
   thumbnail: string;
@@ -29,16 +30,21 @@ export default function App(): ReactElement {
   const [desserts, setDesserts] = useState<Dessert[] | null>(null);
   const [addedItems, setAddedItems] = useState<Item[]>([]);
   const [totalItems, setTotalItems] = useState<number>(0);
+  const [showOrderConfirmed, setShowOrderConfirmed] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch("/data.json");
-        if (!response.ok) throw new Error("Error to fetch data.");
-        const data = await response.json();
+        if (!response.ok) throw new Error("Failed to fetch data.");
+        const data: Dessert[] = await response.json();
         setDesserts(data);
       } catch (error: unknown) {
-        console.log(error);
+        if (error instanceof Error) {
+          console.error("Fetch error:", error.message);
+        } else {
+          console.error("An unknown error occurred.");
+        }
       } finally {
         setLoading(false);
       }
@@ -51,6 +57,11 @@ export default function App(): ReactElement {
     setTotalItems(total);
   }, [addedItems]);
 
+  const handleClear = (): void => {
+    setAddedItems([]);
+    setShowOrderConfirmed(false);
+  };
+
   const handleIncreaseQuantity = (item: Item): void => {
     setAddedItems((previousItems) => {
       const existingItem = previousItems.find(
@@ -62,39 +73,31 @@ export default function App(): ReactElement {
             ? { ...addedItem, quantity: addedItem.quantity + 1 }
             : addedItem
         );
-      } else {
-        return [...previousItems, { ...item, quantity: 1 }];
       }
+      return [...previousItems, { ...item, quantity: 1 }];
     });
   };
 
   const handleDecreaseQuantity = (item: Item): void => {
     setAddedItems((previousItems) => {
-      const existingItem = previousItems.find(
-        (addedItem) => addedItem.name === item.name
-      );
-      if (existingItem) {
-        if (existingItem.quantity === 1) {
-          return previousItems.filter(
-            (addedItem) => addedItem.name !== item.name
-          );
-        } else {
-          return previousItems.map((addedItem) =>
-            addedItem.name === item.name
-              ? { ...addedItem, quantity: addedItem.quantity - 1 }
-              : addedItem
-          );
-        }
-      }
-      return previousItems;
+      return previousItems
+        .map((addedItem) =>
+          addedItem.name === item.name
+            ? { ...addedItem, quantity: Math.max(addedItem.quantity - 1, 0) }
+            : addedItem
+        )
+        .filter((addedItem) => addedItem.quantity > 0);
     });
   };
 
   const handleDeleteItem = (item: Item): void => {
-    const filteredItems = addedItems.filter(
-      (previousItem) => previousItem.name !== item.name
+    setAddedItems((previousItems) =>
+      previousItems.filter((addedItem) => addedItem.name !== item.name)
     );
-    setAddedItems(filteredItems);
+  };
+
+  const handleOpenOrderConfirmed = (): void => {
+    setShowOrderConfirmed(true);
   };
 
   return (
@@ -108,13 +111,17 @@ export default function App(): ReactElement {
             onDecreaseQuantity={handleDecreaseQuantity}
             onDeleteItem={handleDeleteItem}
             onAddedItems={addedItems}
-            desserts={desserts}
+            desserts={desserts ?? []}
           />
           <Cart
             totalItems={totalItems}
             addedItems={addedItems}
             onDeleteItem={handleDeleteItem}
+            onOpenOrderConfirmed={handleOpenOrderConfirmed}
           />
+          {showOrderConfirmed && (
+            <OrderConfirmed onAddedItem={addedItems} onClear={handleClear} />
+          )}
         </>
       )}
     </main>
